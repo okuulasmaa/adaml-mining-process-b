@@ -18,10 +18,12 @@ def main():
 
     # Statistics
     n_variables = X.shape[1]
-    n_observations = X.shape[0]
+    n_observations_original = data_df.shape[0]
+    n_observations_undersampled = X.shape[0]
     n_null = np.sum(np.isnan(X))
     print(f"Number of variables: {n_variables}")
-    print(f"Number of observartions: {n_observations}")
+    print(f"Number of observations: {n_observations_original}")
+    print(f"Number of observartions after undersampling: {n_observations_undersampled}")
     print(f"Number of missing values: {n_null}")
 
     # PCA
