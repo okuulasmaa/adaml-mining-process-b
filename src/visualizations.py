@@ -2,22 +2,23 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def biplot(scores, loadings, labels=None, title=None):
+def biplot(scores, loadings, labels=None, time_colors=None, title=None):
     '''
     Plots a biplot with given scores and loadings
 
     DISCLAIMER:
     Since there isn't as easily available biplot function for Python as there is for MATLAB,
     this code was created using Copilot to emulate the behavior of MATLAB's biplot function 
-    with some additional improvements (coloring the time observations by passed time).
+    with some additional improvements.
     '''
-    
-    plt.figure(figsize=(8, 6))
+
+    fig = plt.figure(figsize=(8, 6))
 
     scores_plot = scores[:, :2] / np.max(np.abs(scores[:, :2]))
-    time_colors = np.arange(scores.shape[0])
     plt.scatter(scores_plot[:, 0], scores_plot[:, 1], c=time_colors, alpha=0.5)
-    plt.colorbar(label='Time [seconds from the start]')
+
+    if not time_colors is None:
+        plt.colorbar(label='Time [seconds from the start]')
 
     for i in range(loadings.shape[0]):
         plt.arrow(0, 0,

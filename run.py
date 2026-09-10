@@ -9,7 +9,7 @@ def main():
 
     # Preprocessing data to float precision
     data_df = pd.read_csv("./data/MiningProcess_Flotation_Plant_Database.csv", decimal=",")
-    data_df["date"] = pd.to_datetime(data_df["date"])
+    data_df["date"] = pd.to_datetime(data_df["date"]).astype("datetime64[ns]")
     data_df["date"] = data_df["date"].astype(int) // 1e9 # To seconds, source: https://stackoverflow.com/questions/54312802/pandas-convert-from-datetime-to-integer-timestamp
     data_df = data_df.astype(float) # All values to same precision
     X = undersample_by_period(data_df.drop(columns=["% Silica Concentrate"]))
@@ -33,7 +33,8 @@ def main():
     loadings = V[:, 0:2]
     scores = Xc @ loadings
 
-    biplot(scores, loadings, labels)
+    time_colors = np.unique_values(data_df["date"] - data_df["date"].min())
+    biplot(scores, loadings, labels, time_colors)
     loading_plot(loadings, labels)
 
 
