@@ -75,16 +75,6 @@ def main():
     plt.savefig("figures/biplot_loadings.pdf")
     plt.show()
 
-    # Xc_normalized = Xc / np.linalg.norm(Xc, axis=0, keepdims=True)
-
-    # C = Xc_normalized.T @ Xc_normalized # Feature correlation matrix 
-
-    # plt.imshow(C, cmap="viridis")
-    # plt.title("Feature Correlation")
-    # plt.colorbar()
-    # plt.savefig("figures/feature_correlation.pdf")
-    # plt.show()
-
 
 if __name__ == "__main__":
     main()
