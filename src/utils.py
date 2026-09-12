@@ -11,6 +11,7 @@ def get_data_df(data_path):
     data_df["date"] = pd.to_datetime(data_df["date"]).astype("datetime64[ns]")
     data_df["date"] = data_df["date"].astype(int) // 1e9 # To seconds, source: https://stackoverflow.com/questions/54312802/pandas-convert-from-datetime-to-integer-timestamp
     data_df = data_df.astype(float) # All values to same precision
+    data_df.sort_values(by=["date"], ascending=True) # Ensure that time series is sorted by time
    
     return data_df
 
