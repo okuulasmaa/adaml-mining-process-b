@@ -2,6 +2,19 @@ import numpy as np
 import pandas as pd
 
 
+def get_data_df(data_path):
+    '''
+    Creates a df object incuding the data
+    '''
+
+    data_df = pd.read_csv(data_path, decimal=",")
+    data_df["date"] = pd.to_datetime(data_df["date"]).astype("datetime64[ns]")
+    data_df["date"] = data_df["date"].astype(int) // 1e9 # To seconds, source: https://stackoverflow.com/questions/54312802/pandas-convert-from-datetime-to-integer-timestamp
+    data_df = data_df.astype(float) # All values to same precision
+   
+    return data_df
+
+
 def undersample_by_period(X: pd.DataFrame) -> np.ndarray:
     '''
     Undersamples data by taking the taking the average of every period of time

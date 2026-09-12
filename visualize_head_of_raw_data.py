@@ -1,10 +1,14 @@
+from pathlib import Path
 import matplotlib.pyplot as plt
-import function_storage as fs
+from src.utils import get_data_df
+
 
 def main():
 
+    data_path = Path("./data/MiningProcess_Flotation_Plant_Database.csv")
+
     # Preprocessing data 
-    data_df = fs.get_data_df()
+    data_df = get_data_df(data_path)
     data_df = data_df.drop(columns=["% Silica Concentrate"])
     n_variables = len(data_df.columns)
 
@@ -15,10 +19,12 @@ def main():
 
     # Make a table of the first 5 rows of the data
     fig, ax = plt.subplots(figsize=(8, 2.5))
-    table = ax.table(cellText=data_df.head().values,colLabels=colLabels,loc="center")
+    table = ax.table(cellText=data_df.head().values,colLabels=colLabels, loc="center")
     table.auto_set_column_width(col=list(range(len(data_df.columns))))
     ax.axis("off")
-    plt.savefig("figures/df_head.pdf",bbox_inches="tight",pad_inches=0)
+    save_path = Path("figures/df_head.pdf")
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(save_path, bbox_inches="tight", pad_inches=0)
     plt.show()
     plt.close()
         
