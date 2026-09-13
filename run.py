@@ -1,7 +1,7 @@
 from pathlib import Path
 import numpy as np
 from src.utils import undersample_by_period, get_data_df
-from src.visualizations import biplot
+from src.visualizations import visualize_distribution, visualize_time, biplot
 
 
 def main():
@@ -23,6 +23,10 @@ def main():
     print(f"Number of observartions after undersampling: {n_observations_undersampled}")
     print(f"Number of missing values: {n_null}")
     print()
+
+    # Visualization
+    visualize_time(data_df)
+    visualize_distribution(data_df.drop(columns=["% Silica Concentrate", "date"]))
 
     # PCA
     Xc = (X - np.mean(X, axis=0)) / np.std(X, axis=0) # Standardization
