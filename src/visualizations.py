@@ -45,11 +45,12 @@ def visualize_time(data_df, size=(5,5)):
     
 
 
-def biplot(scores, loadings, time_colors=None, title=None):
+def biplot(scores, loadings,filename,variable_labels,time_colors=None, title=None):
     '''
     Plots a biplot with given scores and loadings
     '''
 
+    # Save number of variables
     n_variables = loadings.shape[0]
 
     # Initialize figure
@@ -59,9 +60,9 @@ def biplot(scores, loadings, time_colors=None, title=None):
     plt.grid()
     plt.gca().set_axisbelow(True) 
 
-    # Colors for data points
+    # Plot the scores 
     scores_plot = scores[:, :2] / np.max(np.abs(scores[:, :2]))
-    plt.scatter(scores_plot[:,0], scores_plot[:,1],c=time_colors, cmap="gray",edgecolors="black",linewidths=0.25)
+    plt.scatter(scores_plot[:,0], scores_plot[:,1],c=time_colors, cmap="gray",edgecolors="black",linewidths=0.15,s=15)
 
     # Colors for the features
     colors = list(plt.cm.tab20.colors) + list(plt.cm.tab10.colors[:3])
@@ -69,7 +70,7 @@ def biplot(scores, loadings, time_colors=None, title=None):
     # List for used colors
     used_colors = []
 
-    # Plot the features
+    # Plot the loadings
     for i in range(n_variables):
         temp1 = np.array([0., loadings[i,0]])
         temp2 = np.array([0., loadings[i,1]])
@@ -80,9 +81,9 @@ def biplot(scores, loadings, time_colors=None, title=None):
         used_colors.append(colors[i])
 
     # Create labels
-    labels = ["Xc"]
-    for i in range(n_variables):
-        labels.append("f"+str(i+1))
+    labels = ["Scores"]
+    for label in variable_labels:
+        labels.append(label)
 
     # Create a color bar for the time 
     cbar  = plt.colorbar(location="left", pad=0.15)
@@ -96,8 +97,34 @@ def biplot(scores, loadings, time_colors=None, title=None):
     plt.tight_layout()
 
     # Saving the figure
-    save_location = Path("figures/biplot_loadings.pdf")
+    save_location = Path("figures/"+filename+".pdf")
     save_location.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig("figures/biplot_loadings.pdf")
+    plt.savefig("figures/"+filename+".pdf")
 
+    plt.show()
+
+
+def visualize_date_constant_variables(data_df,how_many_dates,how_many_variables):
+    # Initialize plot
+    _, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+
+    # 1. Bar chart (variables)
+    bar_values = np.zeros(np.shape(how_many_dates))
+    bar_values[how_many_dates  >  0] = np.log10(how_many_dates[how_many_dates  >  0])
+    ax1.bar(range(len(how_many_dates)),bar_values)
+    ax1.set_xlabel("Variables")
+    ax1.set_ylabel("Number of timestamps where constant (log10)")
+    ax1.set_xticks(range(len(how_many_dates)))
+    ax1.set_xticklabels(["f" + str(i+2) for i in range(len(how_many_dates))], rotation=45)
+
+    # 2. Line plot (unique timestamps on the horizontal axis)
+    unique_dates = data_df["date"].unique()
+    plot_values = np.zeros(np.shape(how_many_variables))
+    plot_values[how_many_variables  >  0] = np.log10(how_many_variables[how_many_variables  >  0])
+    ax2.plot(unique_dates, plot_values)
+    ax2.set_xlabel("Timestamp")
+    ax2.set_ylabel("Number of constant variables (log10)")
+
+    plt.tight_layout()
+    plt.savefig("figures/time_consant_variables.pdf")
     plt.show()
