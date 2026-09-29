@@ -25,8 +25,8 @@ def main():
     print()
 
     # Visualization
-    visualize_time(data_df)
-    visualize_distribution(data_df.drop(columns=["% Silica Concentrate", "date"]))
+    variable_idx = (1, 2, 11)
+    visualize_time(data_df, variable_idx)
 
     # PCA
     Xc = (X - np.mean(X, axis=0)) / np.std(X, axis=0) # Standardization

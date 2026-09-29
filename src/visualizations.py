@@ -3,44 +3,32 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def visualize_distribution(data_df, size=(5,5), bins=100):
+def visualize_distribution(data_df, variable_idx, bins=100):
 
     fig = plt.figure(figsize=(10, 6))
 
-    k = 0
-    for _ in range(1, size[0] + 1):
-        for _ in range(1, size[1] + 1):
-            ax = fig.add_subplot(size[0], size[1], k + 1)
-            ax.hist(data_df.iloc[:, k], bins=bins)
-            ax.set_title(data_df.columns[k])
-            k += 1
-            if k == data_df.shape[1]:
-                break
-        if k == data_df.shape[1]:
-            break
+    for k, i in enumerate(variable_idx):
+        ax = fig.add_subplot(1, len(variable_idx), k+1)
+        ax.hist(data_df.iloc[:, i], bins=bins)
+        ax.set_title(data_df.columns[k])
         
     plt.show()
 
 
-def visualize_time(data_df, size=(5,5)):
+def visualize_time(data_df, idx):
 
     time = np.arange(data_df.shape[0])
 
     fig = plt.figure(figsize=(10, 6))
 
-    k = 1
-    for _ in range(1, size[0] + 1):
-        for _ in range(1, size[1] + 1):
-            ax = fig.add_subplot(size[0], size[1], k)
-            ax.plot(time, data_df.iloc[:, k])
-            ax.set_ylabel(f"f_{k+1}")
-            ax.set_xlabel("Time index")
-            k += 1
-            if k == data_df.shape[1]:
-                break
-        if k == data_df.shape[1]:
-            break
-        
+    for k, i in enumerate(idx):
+        ax = fig.add_subplot(1, len(idx), k+1)
+        ax.plot(time, data_df.iloc[:, i])
+        ax.set_title(data_df.columns[i])
+        ax.set_ylabel(f"f_{i+1}")
+        ax.set_xlabel("Time index")
+        ax.grid()
+
     plt.show()
     
 
