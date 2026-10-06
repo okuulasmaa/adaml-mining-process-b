@@ -29,3 +29,49 @@ def undersample_by_period(X: pd.DataFrame) -> np.ndarray:
 
     return X_bar
 
+
+def check_variables(data_df):
+
+    # This function identifies timestamps at which variables have constant values
+    # and the variables that remain constant at those timestamps.
+
+    date_str = data_df.columns[0]
+    
+    # Number of rows in each timestamp group
+    group_sizes = data_df.groupby(date_str).size()
+    
+    # Number of unique values of each variable at each time step
+    nunique_df = data_df.groupby(date_str).nunique()
+    
+    # Constant only if the group has at least 2 rows
+    is_constant = (nunique_df == 1) & (group_sizes >= 2).values[:, None]
+    
+    # Number of times each variable was constant
+    how_many_dates = is_constant.sum(axis=0).to_numpy()
+    
+    # Number of constant variables at each timestamp
+    how_many_variables = is_constant.sum(axis=1).to_numpy()
+    
+    # Variables that were constant at least once
+    bad_variables = is_constant.columns[is_constant.any(axis=0)].tolist()
+    
+    return how_many_dates, how_many_variables, bad_variables
+
+
+def remove_dates(data_df, how_many_variables, limit):
+
+    # This function removes timestamps where more than the specified limit of variables have constant values
+
+    # Get the name of the date column 
+    date_str = data_df.columns.tolist()[0]
+    
+    # Get unique timestamps
+    times = data_df[date_str].unique()
+    
+    # Collect timestamps where the number of constant variables meets or exceeds the limit
+    times_to_drop = [times[i] for i, val in enumerate(how_many_variables) if val > limit]
+    
+    # Return the dataframe excluding the rows with those timestamps
+    return data_df[~data_df[date_str].isin(times_to_drop)]
+
+
