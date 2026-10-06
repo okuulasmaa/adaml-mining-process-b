@@ -44,11 +44,13 @@ def visualize_time(data_df, size=(5,5)):
     plt.show()
     
 
-
-def biplot(scores, loadings,filename,variable_labels,time_colors=None, title=None):
+def biplot(scores, loadings, filename, variable_labels, time_colors=None, title=None, show=False):
     '''
     Plots a biplot with given scores and loadings
     '''
+
+    save_path = Path(f"figures/{filename}.pdf")
+    save_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Save number of variables
     n_variables = loadings.shape[0]
@@ -99,12 +101,16 @@ def biplot(scores, loadings,filename,variable_labels,time_colors=None, title=Non
     # Saving the figure
     save_location = Path("figures/"+filename+".pdf")
     save_location.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig("figures/"+filename+".pdf")
+    plt.savefig(save_path)
+    if show:
+        plt.show()
 
-    plt.show()
 
+def visualize_date_constant_variables(data_df, how_many_dates, how_many_variables, show=False):
 
-def visualize_date_constant_variables(data_df,how_many_dates,how_many_variables):
+    save_path = Path("figures/time_consant_variables.pdf")
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+    
     # Initialize plot
     _, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
 
@@ -126,5 +132,6 @@ def visualize_date_constant_variables(data_df,how_many_dates,how_many_variables)
     ax2.set_ylabel("Number of constant variables (log10)")
 
     plt.tight_layout()
-    plt.savefig("figures/time_consant_variables.pdf")
-    plt.show()
+    plt.savefig(save_path)
+    if show:
+        plt.show()

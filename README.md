@@ -1,3 +1,6 @@
 ## Usage
-1. Place data ```MiningProcess_Flotation_Plant_Database.csv``` inside ```/.../adaml-mining-process-b/data/``` directory.
-2. Run using ```python3 run.py``` while in ```/.../adaml-mining-process-b/```.
+```python3 run.py --data [Path to the data CSV]```
+
+Optional arguments:
+
+```-s, --show``` If you want the saved figures to be also shown.
