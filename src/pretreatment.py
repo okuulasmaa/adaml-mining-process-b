@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 
 from src.analysis import pca
-from src.utils import check_variables, remove_dates, undersample_by_period
-from src.visualizations import visualize_date_constant_variables, biplot
+from src.utils import check_variables, remove_dates, undersample_by_period, count_constant_values
+from src.visualizations import visualize_date_constant_variables, visualize_constant_variables, biplot
 
 
 def biplot_pretreated(X, data_df, num_col_original, dropped_fi, show=False):
@@ -119,34 +119,34 @@ def pretreat(data_df: pd.DataFrame, show=False):
 def pretreat_with_undersampling(data_df: pd.DataFrame, show=False):
 
     print("Pretreatment:")
-    
-    # Check are the timestamps evenly distributed
-    time_diff = data_df["date"].diff().dropna()
-    print(f"Even intervals: {np.allclose(time_diff , time_diff .iloc[0])}")
-    
+
     # Check that all the values in the data are positive
     all_positive = (data_df > 0).all()
     print("Truth table for variables to be positive")
     print(all_positive)
 
-    # Check variables that are consant at some timestamps
-    how_many_dates, how_many_variables, bad_variables = check_variables(data_df)
-
-    # Visualize the constant-value problem
-    visualize_date_constant_variables(data_df, how_many_dates, how_many_variables, show)
-
     # Undersample by date
     data_df = undersample_by_period(data_df)
 
-    # Check the variables again after filtering the data
-    _, _, bad_variables = check_variables(data_df)
-    if len(bad_variables) == 0:
-        print("There are no more constant values at any timestamp.")
-    print(f"After filtering there are {data_df.shape[0]} observations.")
+    # Check variables that are consant at some timestamps
+    n_constant = count_constant_values(data_df)
+
+    # Visualize the constant-value problem
+    visualize_constant_variables(n_constant, "n_constant.pdf", show)
+
+    # Check are the timestamps evenly distributed
+    time_diff = data_df["date"].diff()
+    print(f"Even intervals: {np.allclose(time_diff , 3600)}") 
+
+    # Visually identified that variables 2, 3, 12, 13 have constant periods so we drop those
+    data_df = data_df.drop(columns=data_df.columns[[1, 2, 11, 12]])
 
     # Create the data matrix and the target vector
     y = data_df["% Silica Concentrate"].to_numpy()
     X = data_df.drop(columns=["% Silica Concentrate"]).to_numpy()
+
+    print(f"Number of variables left: {X.shape[1]}")
+    print(f"Number of observations left: {X.shape[0]}")
 
     biplot_undersampled(X, data_df, show)
 

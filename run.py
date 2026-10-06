@@ -3,6 +3,7 @@ import argparse
 import numpy as np
 
 from src.utils import get_data_df, split_data
+from src.exploartion import explore_data
 from src.analysis import zscore
 from src.pretreatment import pretreat_with_undersampling
 from src.pls.calibration import calibrate
@@ -26,6 +27,9 @@ def main():
 
     # Import the data from the CSV file
     data_df = get_data_df(data_path)
+
+    # Exploratory analysis
+    explore_data(data_df, show)
 
     # Perform data pretreatment
     X, y = pretreat_with_undersampling(data_df, show=show)

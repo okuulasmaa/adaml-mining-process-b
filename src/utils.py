@@ -71,6 +71,14 @@ def check_variables(data_df):
     return how_many_dates, how_many_variables, bad_variables
 
 
+def count_constant_values(data_df: pd.DataFrame):
+    '''
+    Counts the number of instances per variable where a variable has constant value between adjecent observations.
+    '''
+
+    return np.sum(np.isclose(data_df.diff(), 0.0), axis=0)
+
+
 def remove_dates(data_df, how_many_variables, limit):
 
     # This function removes timestamps where more than the specified limit of variables have constant values

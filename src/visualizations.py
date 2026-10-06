@@ -15,7 +15,10 @@ def visualize_distribution(data_df, variable_idx, bins=100):
     plt.show()
 
 
-def visualize_time(data_df, idx):
+def visualize_time(data_df, idx, filename, show):
+
+    save_path = Path(f"figures/{filename}")
+    save_path.parent.mkdir(parents=True, exist_ok=True)
 
     time = np.arange(data_df.shape[0])
 
@@ -29,7 +32,9 @@ def visualize_time(data_df, idx):
         ax.set_xlabel("Time index")
         ax.grid()
 
-    plt.show()
+    plt.savefig(save_path)
+    if show:
+        plt.show()
     
 
 def biplot(scores, loadings, filename, variable_labels, time_colors=None, title=None, show=False):
@@ -37,7 +42,7 @@ def biplot(scores, loadings, filename, variable_labels, time_colors=None, title=
     Plots a biplot with given scores and loadings
     '''
 
-    save_path = Path(f"figures/{filename}.pdf")
+    save_path = Path(f"figures/{filename}")
     save_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Save number of variables
@@ -120,6 +125,23 @@ def visualize_date_constant_variables(data_df, how_many_dates, how_many_variable
     ax2.set_ylabel("Number of constant variables (log10)")
 
     plt.tight_layout()
+    plt.savefig(save_path)
+    if show:
+        plt.show()
+
+
+def visualize_constant_variables(n_constant, filename, show):
+
+    save_path = Path(f"figures/{filename}")
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+
+    labels = [f"f{i+1}" for i in range(len(n_constant))]
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.bar(labels, n_constant)
+    ax.set_ylabel("Adjecent constant values")
+
     plt.savefig(save_path)
     if show:
         plt.show()
