@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 from src.analysis import pca
-from src.utils import check_variables, remove_dates
+from src.utils import check_variables, remove_dates, undersample_by_period
 from src.visualizations import visualize_date_constant_variables, biplot
 
 
@@ -35,6 +35,24 @@ def biplot_pretreated(X, data_df, num_col_original, dropped_fi, show=False):
     biplot(scores_plot_sampled, loadings, "biplot_sub2", variable_labels, time_colors=time_colors_sampled, title="Biplot", show=show)
 
 
+def biplot_undersampled(X, data_df, show=False):
+    # Center and standardize the data matrix for PCA
+    Xc = (X - np.mean(X, axis=0)) / np.std(X, axis=0) 
+
+    # PCA
+    scores, loadings = pca(Xc, 2, verbose=True)
+
+    # Create colors for the scatter points based on the timestamp
+    temp = np.unique_values(data_df["date"] - data_df["date"].min()) 
+    time_colors = temp[pd.factorize(data_df["date"])[0]]
+
+    # Create variable labels for the biplot 
+    variable_labels = data_df.drop(columns=["% Silica Concentrate"]).columns
+
+    # Create biplot
+    biplot(scores, loadings, "biplot_sub2", variable_labels, time_colors=time_colors, title="Biplot", show=show)
+
+
 def pretreat(data_df: pd.DataFrame, show=False):
 
     print("Pretreatment:")
@@ -60,7 +78,13 @@ def pretreat(data_df: pd.DataFrame, show=False):
     # If the silica concentration is constant across all rows at a given timestamp, we only keep the first row and remove the rest
     data_df = data_df[data_df["% Silica Concentrate"].ne(data_df["% Silica Concentrate"].shift())]
 
-    # Remove the three variables that causes the most trouble 
+    # Check variables that are consant at some timestamps
+    how_many_dates, how_many_variables, bad_variables = check_variables(data_df)
+
+    # Visualize the constant-value problem
+    visualize_date_constant_variables(data_df, how_many_dates, how_many_variables, show)
+
+    # Remove the variables that causes the most trouble 
     cols_to_drop = ['% Iron Feed', '% Silica Feed', '% Iron Concentrate']
     dropped_fi = [data_df.columns.get_loc(col)+1 for col in cols_to_drop] # This is for the variable labels in biplot
     data_df = data_df.drop(columns=cols_to_drop)
@@ -86,6 +110,45 @@ def pretreat(data_df: pd.DataFrame, show=False):
     X = data_df.to_numpy()
 
     biplot_pretreated(X, data_df, num_col_original, dropped_fi, show)
+
+    print()
+
+    return X, y
+
+
+def pretreat_with_undersampling(data_df: pd.DataFrame, show=False):
+
+    print("Pretreatment:")
+    
+    # Check are the timestamps evenly distributed
+    time_diff = data_df["date"].diff().dropna()
+    print(f"Even intervals: {np.allclose(time_diff , time_diff .iloc[0])}")
+    
+    # Check that all the values in the data are positive
+    all_positive = (data_df > 0).all()
+    print("Truth table for variables to be positive")
+    print(all_positive)
+
+    # Check variables that are consant at some timestamps
+    how_many_dates, how_many_variables, bad_variables = check_variables(data_df)
+
+    # Visualize the constant-value problem
+    visualize_date_constant_variables(data_df, how_many_dates, how_many_variables, show)
+
+    # Undersample by date
+    data_df = undersample_by_period(data_df)
+
+    # Check the variables again after filtering the data
+    _, _, bad_variables = check_variables(data_df)
+    if len(bad_variables) == 0:
+        print("There are no more constant values at any timestamp.")
+    print(f"After filtering there are {data_df.shape[0]} observations.")
+
+    # Create the data matrix and the target vector
+    y = data_df["% Silica Concentrate"].to_numpy()
+    X = data_df.drop(columns=["% Silica Concentrate"]).to_numpy()
+
+    biplot_undersampled(X, data_df, show)
 
     print()
 

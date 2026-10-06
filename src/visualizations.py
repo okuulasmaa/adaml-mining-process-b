@@ -125,7 +125,7 @@ def visualize_date_constant_variables(data_df, how_many_dates, how_many_variable
         plt.show()
 
 
-def plot_pressQ2(press, Q2, components, filename, show=False):
+def plot_valid_metrics(press, Q2, R2, components, filename, show=False):
 
     save_path = Path(f"figures/{filename}")
     save_path.parent.mkdir(parents=True, exist_ok=True)
@@ -133,18 +133,30 @@ def plot_pressQ2(press, Q2, components, filename, show=False):
     fig = plt.figure()
 
     # PRESS plot
-    ax = fig.add_subplot(121)
+    ax = fig.add_subplot(131)
     ax.plot(components, press)
+    ax.axvline(components[np.argmin(press)], linestyle="--")
+    ax.grid()
     ax.set_xlabel("LVs")
     ax.set_ylabel("PRESS")
     ax.set_title("PRESS")
 
     # Q2 plot
-    ax = fig.add_subplot(122)
+    ax = fig.add_subplot(132)
     ax.plot(components, Q2)
+    ax.axvline(components[np.argmin(press)], linestyle="--")
+    ax.grid()
     ax.set_xlabel("LVs")
     ax.set_ylabel("Q2")
     ax.set_title("Q2")
+
+    # R2 plot
+    ax = fig.add_subplot(133)
+    ax.plot(components, R2)
+    ax.grid()
+    ax.set_xlabel("LVs")
+    ax.set_ylabel("R2")
+    ax.set_title("R2")
 
     plt.tight_layout()
     plt.savefig(save_path)

@@ -1,9 +1,10 @@
 from pathlib import Path
 import argparse
-from sklearn.model_selection import train_test_split
+import numpy as np
 
-from src.utils import get_data_df
-from src.pretreatment import pretreat
+from src.utils import get_data_df, split_data
+from src.analysis import zscore
+from src.pretreatment import pretreat_with_undersampling
 from src.pls.calibration import calibrate
 
 
@@ -27,15 +28,21 @@ def main():
     data_df = get_data_df(data_path)
 
     # Perform data pretreatment
-    X, y = pretreat(data_df, show=show)
+    X, y = pretreat_with_undersampling(data_df, show=show)
 
     # Split the time series into train, valid, and test splits.
-    valtest_size = 0.3 # Half of this is used for validation and the other half for testing
-    X_train, X_valtest, y_train, y_valtest = train_test_split(X, y, test_size=valtest_size, shuffle=False)
-    X_val, X_test, y_val, y_test = train_test_split(X_valtest, y_valtest, train_size=0.5, shuffle=False)
+    train_size = 0.7 
+    X_train, X_val, X_test, y_train, y_val, y_test = split_data(X, y, train_size)
+
+    # Standardizing splits using z-score
+    mean_X_train, mean_y_train = np.mean(X_train, axis=0), np.mean(y_train, axis=0)
+    std_X_train, std_y_train = np.std(X_train, axis=0), np.std(y_train, axis=0)
+    Xc_train, yc_train = zscore(X_train, mean_X_train, std_X_train), zscore(y_train, mean_y_train, std_y_train)
+    Xc_val, yc_val = zscore(X_val, mean_X_train, std_X_train), zscore(y_val, mean_y_train, std_y_train)
+    Xc_test, yc_test = zscore(X_test, mean_X_train, std_X_train), zscore(y_test, mean_y_train, std_y_train)
 
     # Calibration
-    pls1 = calibrate(X_train, X_val, y_train, y_val, show=show)
+    pls1 = calibrate(Xc_train, Xc_val, yc_train, yc_val, show=show)
 
     # TODO: Testing here
 

@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 
 def get_data_df(data_path):
@@ -16,18 +17,30 @@ def get_data_df(data_path):
     return data_df
 
 
-def undersample_by_period(X: pd.DataFrame) -> np.ndarray:
+def split_data(X, y, train_size):
+    '''
+    Splits data into training, validation, and testing subsets.
+    validation_size = train_size = (1 - train_size) / 2
+    '''
+
+    X_train, X_valtest, y_train, y_valtest = train_test_split(X, y, train_size=train_size, shuffle=False)
+    X_val, X_test, y_val, y_test = train_test_split(X_valtest, y_valtest, train_size=0.5, shuffle=False)
+
+    return X_train, X_val, X_test, y_train, y_val, y_test
+
+
+def undersample_by_period(X: pd.DataFrame) -> pd.DataFrame:
     '''
     Undersamples data by taking the taking the average of every period of time
     '''
 
     times = X["date"].unique()
-    X_bar = np.zeros((times.shape[0], X.shape[1]))
 
+    rows = []
     for i, time in enumerate(times):
-        X_bar[i, :] = X[X["date"] == time].mean().to_numpy()
+        rows.append(X[X["date"] == time].mean().to_list())
 
-    return X_bar
+    return pd.DataFrame(rows, columns=X.columns)
 
 
 def check_variables(data_df):
