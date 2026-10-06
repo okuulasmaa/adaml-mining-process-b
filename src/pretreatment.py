@@ -37,6 +37,8 @@ def biplot_pretreated(X, data_df, num_col_original, dropped_fi, show=False):
 
 def pretreat(data_df: pd.DataFrame, show=False):
 
+    print("Pretreatment:")
+
     # Check are the timestamps evenly distributed
     time_diff = data_df["date"].diff().dropna()
     print(f"Even intervals: {np.allclose(time_diff , time_diff .iloc[0])}")
@@ -84,5 +86,7 @@ def pretreat(data_df: pd.DataFrame, show=False):
     X = data_df.to_numpy()
 
     biplot_pretreated(X, data_df, num_col_original, dropped_fi, show)
+
+    print()
 
     return X, y

@@ -3,4 +3,4 @@
 
 Optional arguments:
 
-```-s, --show``` If you want the saved figures to be also shown.
+```--show``` If you want the saved figures to be also shown.
