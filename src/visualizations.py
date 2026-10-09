@@ -137,14 +137,19 @@ def visualize_constant_variables(n_constant, filename, show):
 
     labels = [f"f{i+1}" for i in range(len(n_constant))]
 
-    fig = plt.figure()
+    plot_values = np.zeros(np.shape(n_constant))
+    plot_values[n_constant>0] = np.log(n_constant[n_constant>0])
+
+    fig = plt.figure(figsize=(14, 5))
     ax = fig.add_subplot(111)
-    ax.bar(labels, n_constant)
-    ax.set_ylabel("Adjecent constant values")
+    ax.bar(labels,plot_values)
+    ax.set_ylabel("Adjecent constant values (log)")
+    ax.tick_params(axis="x", labelsize=8)
 
     plt.savefig(save_path)
-    if show:
-        plt.show()
+    plt.show()
+    # if show:
+    #     plt.show()
 
 
 def plot_valid_metrics(press, Q2, R2, components, filename, show=False):
