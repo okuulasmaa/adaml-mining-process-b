@@ -28,7 +28,6 @@ def visualize_time(data_df, idx, filename, show):
         ax = fig.add_subplot(1, len(idx), k+1)
         ax.plot(time, data_df.iloc[:, i])
         ax.set_title(data_df.columns[i])
-        ax.set_ylabel(f"f_{i+1}")
         ax.set_xlabel("Time index")
         ax.grid()
 
@@ -135,7 +134,7 @@ def visualize_constant_variables(n_constant, filename, show):
     save_path = Path(f"figures/{filename}")
     save_path.parent.mkdir(parents=True, exist_ok=True)
 
-    labels = [f"f{i+1}" for i in range(len(n_constant))]
+    labels = [f"$f_{{{i}}}$" for i in range(1, len(n_constant)+1)]
 
     plot_values = np.zeros(np.shape(n_constant))
     plot_values[n_constant>0] = np.log(n_constant[n_constant>0])
@@ -180,6 +179,7 @@ def plot_valid_metrics(press, Q2, R2, components, filename, show=False):
     # R2 plot
     ax = fig.add_subplot(133)
     ax.plot(components, R2)
+    ax.axvline(components[np.argmin(press)], linestyle="--")
     ax.grid()
     ax.set_xlabel("LVs")
     ax.set_ylabel("R2")
