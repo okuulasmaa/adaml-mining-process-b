@@ -49,3 +49,5 @@ def count_constant_values(data_df: pd.DataFrame):
     '''
 
     return np.sum(np.isclose(data_df.diff(), 0.0), axis=0)
+
+
