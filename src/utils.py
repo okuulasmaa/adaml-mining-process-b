@@ -96,3 +96,7 @@ def remove_dates(data_df, how_many_variables, limit):
     return data_df[~data_df[date_str].isin(times_to_drop)]
 
 
+def residual_sum_of_squares(y_true: np.ndarray, y_pred: np.ndarray):
+    return np.sum((y_true - y_pred) ** 2)
+
+

@@ -3,10 +3,8 @@ from sklearn.cross_decomposition import PLSRegression
 
 
 from src.visualizations import plot_valid_metrics
+from src.utils import residual_sum_of_squares
 
-
-def residual_sum_of_squares(y_true: np.ndarray, y_pred: np.ndarray):
-    return np.sum((y_true - y_pred) ** 2)
 
 
 def calibrate(X_train: np.ndarray, X_val: np.ndarray, y_train: np.ndarray, y_val: np.ndarray, show=False):
@@ -57,7 +55,7 @@ def calibrate(X_train: np.ndarray, X_val: np.ndarray, y_train: np.ndarray, y_val
     print(f"PRESS: {min_press:.3f}")
     print(f"R2: {max_R2:.3f}")
 
-    plot_valid_metrics(press_list, Q2_list, R2_list, n_components_list, "calibration.png", show)
+    plot_valid_metrics(press_list, Q2_list, R2_list, n_components_list, "calibration.pdf", show)
 
     print()
 

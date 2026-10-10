@@ -15,6 +15,7 @@ def visualize_distribution(data_df, variable_idx, bins=100):
     plt.show()
 
 
+
 def visualize_time(data_df, idx, filename, show):
 
     save_path = Path(f"figures/{filename}")
@@ -34,6 +35,8 @@ def visualize_time(data_df, idx, filename, show):
     plt.savefig(save_path)
     if show:
         plt.show()
+    else:
+        plt.close(fig)
     
 
 def biplot(scores, loadings, filename, variable_labels, time_colors=None, title=None, show=False):
@@ -48,7 +51,7 @@ def biplot(scores, loadings, filename, variable_labels, time_colors=None, title=
     n_variables = loadings.shape[0]
 
     # Initialize figure
-    plt.figure(figsize=(10, 6))
+    fig = plt.figure(figsize=(10, 6))
 
     # Set a grid to the figure
     plt.grid()
@@ -96,7 +99,8 @@ def biplot(scores, loadings, filename, variable_labels, time_colors=None, title=
     plt.savefig(save_path)
     if show:
         plt.show()
-
+    else:
+        plt.close(fig)
 
 def visualize_date_constant_variables(data_df, how_many_dates, how_many_variables, show=False):
 
@@ -104,7 +108,7 @@ def visualize_date_constant_variables(data_df, how_many_dates, how_many_variable
     save_path.parent.mkdir(parents=True, exist_ok=True)
     
     # Initialize plot
-    _, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
 
     # 1. Bar chart (variables)
     bar_values = np.zeros(np.shape(how_many_dates))
@@ -127,6 +131,10 @@ def visualize_date_constant_variables(data_df, how_many_dates, how_many_variable
     plt.savefig(save_path)
     if show:
         plt.show()
+    else:
+        plt.close(fig)
+
+    return 
 
 
 def visualize_constant_variables(n_constant, filename, show):
@@ -146,9 +154,12 @@ def visualize_constant_variables(n_constant, filename, show):
     ax.tick_params(axis="x", labelsize=8)
 
     plt.savefig(save_path)
-    plt.show()
-    # if show:
-    #     plt.show()
+    if show:
+        plt.show()
+    else:
+        plt.close(fig)
+
+    return 
 
 
 def plot_valid_metrics(press, Q2, R2, components, filename, show=False):
@@ -189,4 +200,27 @@ def plot_valid_metrics(press, Q2, R2, components, filename, show=False):
     plt.savefig(save_path)
     if show:
         plt.show()
+    else:
+        plt.close(fig)
+
+    return 
+
+
+def plot_test_pred_vs_real(y_pred, y_real, dates, show):
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(np.linspace(-2, 2, 100), np.linspace(-2, 2, 100), 'k')
+    sc = ax.scatter(y_real, y_pred, c=dates, cmap='viridis', linewidths=0.20, s=30)
+    fig.colorbar(sc, ax=ax)
+    ax.set_xlabel("True values")
+    ax.set_ylabel("Predicted values")
+
+    plt.savefig("figures/initial_test_results.pdf")
     
+    if show:
+        plt.show()
+    else:
+        plt.close(fig)
+        
+    return
+

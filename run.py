@@ -2,11 +2,12 @@ from pathlib import Path
 import argparse
 import numpy as np
 
-from src.utils import get_data_df, split_data
+from src.utils import get_data_df, split_data, residual_sum_of_squares
 from src.exploartion import explore_data
 from src.analysis import zscore
 from src.pretreatment import pretreat_with_undersampling
 from src.pls.calibration import calibrate
+from src.visualizations import plot_test_pred_vs_real, plot_residuals
 
 
 def build_parser():
@@ -38,6 +39,8 @@ def main():
     train_size = 0.7 
     X_train, X_val, X_test, y_train, y_val, y_test = split_data(X, y, train_size)
 
+    dates_test =  X_test[:,0]
+
     # Standardizing splits using z-score
     mean_X_train, mean_y_train = np.mean(X_train, axis=0), np.mean(y_train, axis=0)
     std_X_train, std_y_train = np.std(X_train, axis=0), np.std(y_train, axis=0)
@@ -49,6 +52,20 @@ def main():
     pls1 = calibrate(Xc_train, Xc_val, yc_train, yc_val, show=show)
 
     # TODO: Testing here
+    print()
+    print("Test begins")
+    yc_test_pred = pls1.predict(Xc_test)
+
+    sse = residual_sum_of_squares(yc_test,yc_test_pred)
+    print(f"Sum of squared errors is {np.round(sse,3)}")
+
+    plot_test_pred_vs_real(yc_test_pred,yc_test,dates_test,True)
+
+
+
+
+    return 
+
 
 
 if __name__ == "__main__":

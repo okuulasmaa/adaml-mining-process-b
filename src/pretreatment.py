@@ -132,7 +132,7 @@ def pretreat_with_undersampling(data_df: pd.DataFrame, show=False):
     n_constant = count_constant_values(data_df)
 
     # Visualize the constant-value problem
-    visualize_constant_variables(n_constant, "n_constant.pdf", show)
+    #visualize_constant_variables(n_constant, "n_constant.pdf", show)
 
     # Check are the timestamps evenly distributed
     time_diff = data_df["date"].diff()
