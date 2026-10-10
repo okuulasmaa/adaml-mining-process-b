@@ -1,9 +1,8 @@
 import pandas as pd
 import numpy as np
 
-from src.utils import undersample_by_period
+from src.utils import undersample_by_period, pca, zscore
 from src.visualizations import visualize_time, biplot
-from src.analysis import pca, zscore
 
 
 def plot_initial_biplot(data_df, scores, loadings, show):

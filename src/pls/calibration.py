@@ -5,7 +5,6 @@ from src.visualizations import plot_valid_metrics
 from src.utils import residual_sum_of_squares
 
 
-
 def calibrate(X_train: np.ndarray, X_val: np.ndarray, y_train: np.ndarray, y_val: np.ndarray, show=False):
 
     print("Calibration:")

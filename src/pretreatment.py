@@ -1,15 +1,14 @@
 import pandas as pd
 import numpy as np
 
-from src.analysis import pca
-from src.utils import undersample_by_period, count_constant_values
+from src.utils import undersample_by_period, count_constant_values, pca, zscore
 from src.visualizations import visualize_constant_variables, biplot
 
 
 def biplot_undersampled(data_df: pd.DataFrame, var_names: list, show=False):
     # Center and standardize the data matrix for PCA
     X = data_df.to_numpy()
-    Xc = (X - np.mean(X, axis=0)) / np.std(X, axis=0) 
+    Xc = zscore(X)
 
     # PCA
     scores, loadings = pca(Xc, 2, verbose=True)
@@ -38,7 +37,7 @@ def pretreat_with_undersampling(data_df: pd.DataFrame, show=False):
     n_constant = count_constant_values(data_df)
 
     # Visualize the constant-value problem
-    #visualize_constant_variables(n_constant, "n_constant.pdf", show)
+    visualize_constant_variables(n_constant, "n_constant.pdf", show)
 
     # Check are the timestamps evenly distributed
     time_diff = data_df["date"].diff()

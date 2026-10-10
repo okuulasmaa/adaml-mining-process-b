@@ -15,7 +15,6 @@ def visualize_distribution(data_df, variable_idx, bins=100):
     plt.show()
 
 
-
 def visualize_time(data_df, idx, filename, show):
 
     save_path = Path(f"figures/{filename}")
@@ -102,40 +101,6 @@ def biplot(scores, loadings, filename, variable_labels, time_colors=None, title=
     else:
         plt.close(fig)
 
-def visualize_date_constant_variables(data_df, how_many_dates, how_many_variables, show=False):
-
-    save_path = Path("figures/time_consant_variables.pdf")
-    save_path.parent.mkdir(parents=True, exist_ok=True)
-    
-    # Initialize plot
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
-
-    # 1. Bar chart (variables)
-    bar_values = np.zeros(np.shape(how_many_dates))
-    bar_values[how_many_dates  >  0] = np.log10(how_many_dates[how_many_dates  >  0])
-    ax1.bar(range(len(how_many_dates)),bar_values)
-    ax1.set_xlabel("Variables")
-    ax1.set_ylabel("Number of timestamps where constant (log10)")
-    ax1.set_xticks(range(len(how_many_dates)))
-    ax1.set_xticklabels(["f" + str(i+2) for i in range(len(how_many_dates))], rotation=45)
-
-    # 2. Line plot (unique timestamps on the horizontal axis)
-    unique_dates = data_df["date"].unique()
-    plot_values = np.zeros(np.shape(how_many_variables))
-    plot_values[how_many_variables  >  0] = np.log10(how_many_variables[how_many_variables  >  0])
-    ax2.plot(unique_dates, plot_values)
-    ax2.set_xlabel("Timestamp")
-    ax2.set_ylabel("Number of constant variables (log10)")
-
-    plt.tight_layout()
-    plt.savefig(save_path)
-    if show:
-        plt.show()
-    else:
-        plt.close(fig)
-
-    return 
-
 
 def visualize_constant_variables(n_constant, filename, show):
 
@@ -204,7 +169,10 @@ def plot_valid_metrics(press, Q2, R2, components, filename, show=False):
         plt.close(fig)
 
 
-def plot_test_pred_vs_real(y_pred, y_real, dates, show):
+def plot_test_pred_vs_real(y_pred, y_real, dates, filename, show=False):
+
+    save_path = Path(f"figures/{filename}")
+    save_path.parent.mkdir(parents=True, exist_ok=True)
 
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.plot(np.linspace(-2, 2, 100), np.linspace(-2, 2, 100), 'k')
@@ -213,8 +181,7 @@ def plot_test_pred_vs_real(y_pred, y_real, dates, show):
     ax.set_xlabel("True values")
     ax.set_ylabel("Predicted values")
 
-    plt.savefig("figures/initial_test_results.pdf")
-    
+    plt.savefig(save_path)
     if show:
         plt.show()
     else:
@@ -243,7 +210,9 @@ def visualize_residuals(y, filename, n_bins=100, show=False):
     plt.savefig(save_path)
     if show:
         plt.show()
-
+    else:
+        plt.close(fig)
+    
 
 def visualize_coefficients(coefficients, var_names, filename, show=False):
 
@@ -258,3 +227,6 @@ def visualize_coefficients(coefficients, var_names, filename, show=False):
     plt.savefig(save_path)
     if show:
         plt.show()
+    else:
+        plt.close(fig)
+
