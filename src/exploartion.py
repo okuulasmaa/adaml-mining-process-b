@@ -32,7 +32,6 @@ def explore_data(data_df: pd.DataFrame, show):
 
     data_df = undersample_by_period(data_df)
 
-    # X = data_df.drop(columns=["% Silica Concentrate"]).to_numpy()
     X = data_df.drop(columns=["% Silica Concentrate"]).to_numpy()
 
     # Statistics

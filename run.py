@@ -7,6 +7,7 @@ from src.exploartion import explore_data
 from src.analysis import zscore
 from src.pretreatment import pretreat_with_undersampling
 from src.pls.calibration import calibrate
+from src.visualizations import visualize_coefficients, visualize_residuals
 
 
 def build_parser():
@@ -32,7 +33,7 @@ def main():
     explore_data(data_df, show)
 
     # Perform data pretreatment
-    X, y = pretreat_with_undersampling(data_df, show=show)
+    X, y, var_names = pretreat_with_undersampling(data_df, show=show)
 
     # Split the time series into train, valid, and test splits.
     train_size = 0.7 
@@ -49,6 +50,9 @@ def main():
     pls1 = calibrate(Xc_train, Xc_val, yc_train, yc_val, show=show)
 
     # TODO: Testing here
+
+    visualize_residuals(yc_test - pls1.predict(Xc_test), filename="residuals.pdf", n_bins=50, show=show)
+    visualize_coefficients(pls1.coef_[0], var_names[:-1], filename="coefficients.pdf", show=show)
 
 
 if __name__ == "__main__":

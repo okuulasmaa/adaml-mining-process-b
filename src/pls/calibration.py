@@ -1,7 +1,6 @@
 import numpy as np
 from sklearn.cross_decomposition import PLSRegression
 
-
 from src.visualizations import plot_valid_metrics
 
 

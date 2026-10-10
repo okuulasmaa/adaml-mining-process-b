@@ -184,4 +184,41 @@ def plot_valid_metrics(press, Q2, R2, components, filename, show=False):
     plt.savefig(save_path)
     if show:
         plt.show()
-    
+
+
+def visualize_residuals(y, filename, n_bins=100, show=False):
+
+    save_path = Path(f"figures/{filename}")
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+
+    fig = plt.figure()
+
+    # Time plot
+    ax = fig.add_subplot(121)
+    ax.plot(list(range(y.shape[0])), y)
+    ax.set_ylabel("Residual")
+    ax.set_xlabel("Time index")
+
+    # Residual histogram
+    ax = fig.add_subplot(122)
+    ax.hist(y, bins=n_bins)
+    ax.set_ylabel("Count")
+    ax.set_xlabel("Residual")
+
+    plt.savefig(save_path)
+    if show:
+        plt.show()
+
+def visualize_coefficients(coefficients, var_names, filename, show=False):
+
+    save_path = Path(f"figures/{filename}")
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_ylabel("Regression coefficient")
+    ax.bar(var_names, coefficients)
+
+    plt.savefig(save_path)
+    if show:
+        plt.show()
