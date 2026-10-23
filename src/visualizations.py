@@ -230,3 +230,5 @@ def visualize_coefficients(coefficients, var_names, filename, show=False):
     else:
         plt.close(fig)
 
+
+# Emman testi
