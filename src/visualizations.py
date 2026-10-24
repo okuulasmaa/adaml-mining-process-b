@@ -231,4 +231,39 @@ def visualize_coefficients(coefficients, var_names, filename, show=False):
         plt.close(fig)
 
 
+def t1_t2_scatter_plot(pls,time_colors,indices,Xc_test):
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+
+    t1 = pls.x_scores_[:,indices[0]]
+    t2 = pls.x_scores_[:,indices[1]]
+
+    sc1 =ax1.scatter(t1,t2,c=time_colors[:len(t1)],linewidths=0.15,s=15)
+    ax1.set_xlabel("T"+str(indices[0]+1))
+    ax1.set_ylabel("T"+str(indices[1]+1))
+    ax1.set_title("T scatter plot (train)")
+ 
+    cbar = fig.colorbar(sc1, ax=ax1)
+    cbar.set_label('Date')
+    
+    T_test = pls.transform(Xc_test)
+    t1 = T_test[:,indices[0]]
+    t2 = T_test[:,indices[1]]
+
+    sc2 = ax2.scatter(t1,t2,c=time_colors[-len(t1):],linewidths=0.15,s=15)
+    ax2.set_xlabel("T"+str(indices[0]+1))
+    ax2.set_ylabel("T"+str(indices[1]+1))
+    ax2.set_title("T scatter plot (test)")
+
+    cbar = fig.colorbar(sc2, ax=ax2)
+    cbar.set_label('Date')
+ 
+    plt.savefig("figures/t_scatter_plot_t"+str(indices[0]+1)+"t"+str(indices[1]+1)+".pdf")
+    plt.show()
+
+    return
+
+
+
+
 # Emman testi
