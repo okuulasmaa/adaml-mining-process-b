@@ -49,7 +49,7 @@ def main():
     pls1 = calibrate(Xc_train, Xc_val, yc_train, yc_val, show=show)
 
     # Testing
-    test_model(pls1, Xc_test, yc_test, yc_train, var_names, show=show)
+    test_model(pls1, Xc_test, yc_test, yc_train, var_names, data_df,show=show)
 
 
 if __name__ == "__main__":
