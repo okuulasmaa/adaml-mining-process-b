@@ -231,7 +231,7 @@ def visualize_coefficients(coefficients, var_names, filename, show=False):
         plt.close(fig)
 
 
-def t1_t2_scatter_plot(pls,time_colors,indices,Xc_test):
+def t1_t2_scatter_plot(pls,time_colors,indices,Xc_test,show=False):
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
 
@@ -257,9 +257,14 @@ def t1_t2_scatter_plot(pls,time_colors,indices,Xc_test):
 
     cbar = fig.colorbar(sc2, ax=ax2)
     cbar.set_label('Date')
- 
-    plt.savefig("figures/t_scatter_plot_t"+str(indices[0]+1)+"t"+str(indices[1]+1)+".pdf")
-    plt.show()
+
+    save_path = "figures/t_scatter_plot_t"+str(indices[0]+1)+"t"+str(indices[1]+1)+".pdf"
+
+    plt.savefig(save_path)
+    if show:
+        plt.show()
+    else:
+        plt.close(fig)
 
     return
 
