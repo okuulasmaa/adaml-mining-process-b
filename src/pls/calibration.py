@@ -2,10 +2,13 @@ import numpy as np
 from sklearn.cross_decomposition import PLSRegression
 
 from src.visualizations import plot_valid_metrics
-from src.utils import residual_sum_of_squares
+from src.utils import residual_sum_of_squares, explained_variance_table
 
 
 def calibrate(X_train: np.ndarray, X_val: np.ndarray, y_train: np.ndarray, y_val: np.ndarray, show=False):
+    '''
+    Calibrate PLS1 model.
+    '''
 
     print("Calibration:")
     
@@ -54,6 +57,9 @@ def calibrate(X_train: np.ndarray, X_val: np.ndarray, y_train: np.ndarray, y_val
     print(f"R2: {max_R2:.3f}")
 
     plot_valid_metrics(press_list, Q2_list, R2_list, n_components_list, "calibration.pdf", show)
+
+    print("Explained variance per latent variable:")
+    print(explained_variance_table(best_pls1, X_train, y_train).round(2))
 
     print()
 
