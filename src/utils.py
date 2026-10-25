@@ -79,3 +79,31 @@ def zscore(X: np.ndarray, mu=None, sig=None):
         sig = np.std(X, axis=0)
     
     return (X - mu) / sig
+
+def explained_variance_table(pls, X, y):
+    '''
+    Percentage of the variance of X and y explained by each latent variable (LV).
+    '''
+
+    X = np.asarray(X, dtype=float)
+    y = np.asarray(y, dtype=float).reshape(len(X), -1)
+
+    Xs = (X - X.mean(axis=0)) / X.std(axis=0, ddof=1)
+    ys = (y - y.mean(axis=0)) / y.std(axis=0, ddof=1)
+
+    T = pls.x_scores_ 
+    P = pls.x_loadings_
+    q = pls.y_loadings_[0]
+
+    t_ss = np.sum(T**2, axis=0)
+
+    var_x = 100 * t_ss * np.sum(P**2, axis=0) / np.sum(Xs**2)
+    var_y = 100 * t_ss * q**2 / np.sum(ys**2)
+
+    return pd.DataFrame({
+        "LV": np.arange(1, T.shape[1] + 1),
+        "X (%)": var_x,
+        "X cumulative (%)": np.cumsum(var_x),
+        "y (%)": var_y,
+        "y cumulative (%)": np.cumsum(var_y),
+    }).set_index("LV")

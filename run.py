@@ -2,7 +2,7 @@ from pathlib import Path
 import argparse
 import numpy as np
 
-from src.utils import get_data_df, split_data, zscore
+from src.utils import get_data_df, split_data, zscore, explained_variance_table
 from src.exploartion import explore_data
 from src.pretreatment import pretreat_with_undersampling
 from src.pls.calibration import calibrate
@@ -47,6 +47,9 @@ def main():
 
     # Calibration
     pls1 = calibrate(Xc_train, Xc_val, yc_train, yc_val, show=show)
+
+    print("Explained variance per latent variable:")
+    print(explained_variance_table(pls1, Xc_train, yc_train).round(2))
 
     # Testing
     test_model(pls1, Xc_test, yc_test, yc_train, var_names, data_df,show=show)

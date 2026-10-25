@@ -268,7 +268,3 @@ def t1_t2_scatter_plot(pls,time_colors,indices,Xc_test,show=False):
 
     return
 
-
-
-
-# Emman testi

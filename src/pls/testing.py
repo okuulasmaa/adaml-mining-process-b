@@ -20,6 +20,7 @@ def test_model(pls: PLSRegression, X_test, y_test, y_train, var_names, data_df,s
     Q2 = 1 - press/tss
     print(f"PRESS: {press:.3f}")
     print(f"Q2: {Q2:.3f}")
+    
 
     # Visualizations
     plot_test_pred_vs_real(y_pred, y_test, dates_test, filename="initial_test_results.pdf", show=show)
@@ -30,4 +31,4 @@ def test_model(pls: PLSRegression, X_test, y_test, y_train, var_names, data_df,s
     temp = np.unique_values(data_df["date"] - data_df["date"].min()) 
     time_colors = temp[pd.factorize(data_df["date"])[0]]
     t1_t2_scatter_plot(pls,time_colors,[0,1],X_test,show=show)
-
+    
